@@ -39,7 +39,7 @@ public abstract class Layer {
 
     public void setCurrentContents(Matrix layerContents) {
         this.layerContents = layerContents;
-    }
+    }   
 
     public void setNext(Layer layerContents) {
         this.nextLayer = layerContents;
@@ -47,5 +47,9 @@ public abstract class Layer {
 
     public void setPrev(Layer layerContents) {
         this.prevLayer = layerContents;
+    }
+
+    public Matrix getActivatedContents() {
+        return this.activatedLayerContents;
     }
 }
