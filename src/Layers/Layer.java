@@ -9,7 +9,6 @@ public abstract class Layer {
     protected int numNeurons;
     
     protected Layer prevLayer; 
-    protected Layer nextLayer;
 
     protected ActivationFunction activation;
     protected ErrorFunction errorFunction;
@@ -21,6 +20,7 @@ public abstract class Layer {
     public Layer(ActivationFunction activation, ErrorFunction errorFunction, int size) {
         this.activation = activation;
         this.errorFunction = errorFunction;
+        linkLayers(null);
         initializeLayer(size);
     }
     
@@ -33,14 +33,9 @@ public abstract class Layer {
         }
     }
 
-    public void linkLayers(Layer prev, Layer next) {
+    public void linkLayers(Layer prev) {
         this.prevLayer = prev;
-        this.nextLayer = next;
     }
-
-    public void setCurrentContents(Matrix layerContents) {
-        this.layerContents = layerContents;
-    }   
 
     public Matrix getActivatedContents() {
         return this.activatedLayerContents;
