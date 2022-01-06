@@ -1,4 +1,5 @@
 package ActivationFunctionLibrary;
+import java.lang.Math;
 
 public class tanh extends ActivationFunction{
     protected double Activation(double input) {
