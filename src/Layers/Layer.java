@@ -7,15 +7,16 @@ public abstract class Layer {
     protected Matrix layerContents;
     protected Matrix activatedLayerContents;
     protected int numNeurons;
-
-    protected Layer nextLayer;
+    
     protected Layer prevLayer; 
+    protected Layer nextLayer;
 
     protected ActivationFunction activation;
     protected ErrorFunction errorFunction;
 
-    protected abstract void feedForward();
-    protected abstract void backPropagation();
+    public abstract void feedForward();
+    public abstract void backPropagation(Matrix targetValues);
+    public abstract void initializeLayer(int size);
 
     public Layer(ActivationFunction activation, ErrorFunction errorFunction, int size) {
         this.activation = activation;
@@ -32,24 +33,20 @@ public abstract class Layer {
         }
     }
 
-    protected void initializeLayer(int size) {
-        this.layerContents = new Matrix(size, 1);
-        this.numNeurons = size;
+    public void linkLayers(Layer prev, Layer next) {
+        this.prevLayer = prev;
+        this.nextLayer = next;
     }
 
     public void setCurrentContents(Matrix layerContents) {
         this.layerContents = layerContents;
     }   
 
-    public void setNext(Layer layerContents) {
-        this.nextLayer = layerContents;
-    }
-
-    public void setPrev(Layer layerContents) {
-        this.prevLayer = layerContents;
-    }
-
     public Matrix getActivatedContents() {
         return this.activatedLayerContents;
+    }
+
+    public int getSize() {
+        return this.numNeurons;
     }
 }
