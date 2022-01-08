@@ -181,7 +181,7 @@ public class Matrix {
         else {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < matrix.getNumCols(); j++) {
-                    int sum = 0;
+                    double sum = 0;
                     for (int k = 0; k < cols; k++) {
                         sum += data[i][k]*matrix.getData()[k][j];
                     }
@@ -206,8 +206,8 @@ public class Matrix {
     public Matrix transpose() {
         double[][] newData = new double[cols][rows];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
                 newData[i][j] = data[j][i];
             }
         }
@@ -236,26 +236,6 @@ public class Matrix {
         return this.data;
     }
     public static void main(String args[]) {
-        double[][] data1 =  {
-            {1, 2, 3, 4},
-            {5, 6, 7, 8},
-            {9, 10, 11, 12},
-            {13, 14, 15, 16},
-            {17, 18, 19, 20}
-        };
-
-        double[][] data2 =  {
-            {10, 10},
-            {10, 10},
-            {10, 10},
-            {10, 10},
-            {9, 8}
-        };
-        
-        int[] indices = {0, 1};
-        Matrix matrix1 = new Matrix(data1);
-        Matrix matrix2 = matrix1.setMultipleColumns(data2, indices);
-        matrix2.printMatrix();
-        
+    
     }
 }

@@ -3,6 +3,7 @@ import MatrixLibrary.Matrix;
 
 public abstract class ErrorFunction {
     protected double error;
+    protected double errorDerivative;
     protected Matrix errorMatrix;
     protected Matrix errorDerivativeMatrix;
     protected abstract double Error(double target, double input);
@@ -38,6 +39,16 @@ public abstract class ErrorFunction {
         error = sum;
     }
 
+    public void numDerivativeError() {
+        double sum = 0.00;
+        for (int i = 0; i < errorDerivativeMatrix.getNumRows(); i++) {
+            for (int j = 0; j < errorDerivativeMatrix.getNumCols(); j++) {
+                sum += errorDerivativeMatrix.getData()[i][j];
+            }
+        }
+        errorDerivative = sum;
+    }
+
     public Matrix getErrorMatrix() {
         return this.errorMatrix;
     }
@@ -48,5 +59,9 @@ public abstract class ErrorFunction {
 
     public double getError() {
         return this.error;
+    }
+
+    public double getErrorDerivative() {
+        return this.errorDerivative;
     }
 }

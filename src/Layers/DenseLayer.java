@@ -9,8 +9,9 @@ public class DenseLayer extends Layer{
     private Matrix weights;
     private Matrix bias;
 
-    public DenseLayer(ActivationFunction activation, ErrorFunction errorFunction, int size) {
+    public DenseLayer(ActivationFunction activation, ErrorFunction errorFunction, int size, Layer prevLayer) {
         super(activation, errorFunction, size);
+        this.prevLayer = prevLayer;
     }
 
     public void initializeLayer(int size) throws IllegalArgumentException{
@@ -23,7 +24,7 @@ public class DenseLayer extends Layer{
     }
     
     public void feedForward() throws IllegalArgumentException{
-        if (checkDimensions()) {
+        if (checkDimensions(numNeurons)) {
             Matrix weightsTranspose = weights.transpose();
             Matrix weightMultipliedByLayer = weightsTranspose.multiply(prevLayer.getActivatedContents());
 
@@ -31,8 +32,12 @@ public class DenseLayer extends Layer{
             activatedLayerContents = activation.inputActivation(layerContents);
         }
         else {
-            throw new IllegalArgumentException("Make sure the 'layerContent' matrix is of the correct dimensions");
+            throw new IllegalArgumentException("Make sure the number of neurons of this layer is equal to be of the previous layer");
         }
+    }
+
+    public void setLearningRate(double rate) {
+        this.learningRate = rate;
     }
 
 
@@ -42,41 +47,44 @@ public class DenseLayer extends Layer{
 
         deltaLossWeights = deltaLossWeights.scalarMultiply(-learningRate);
         deltaLossBias = deltaLossBias.scalarMultiply(-learningRate);
-        
+
         weights = weights.add(deltaLossWeights);
         bias = bias.add(deltaLossBias);
     }
 
     private Matrix backPropagateWeights(Matrix targetValues) {
         Matrix deltaLossInput = calculateDeltaLossInput(targetValues);
-        return deltaLossInput.multiply(prevLayer.getActivatedContents());
+
+        //eltaLossInput.printMatrix();
+        return deltaLossInput.multiply(prevLayer.getActivatedContents().transpose());
     }
 
     private Matrix backPropagateBias(Matrix targetValues) {
         Matrix deltaLossInput = calculateDeltaLossInput(targetValues);
 
-        return deltaLossInput.multiply(generateOneMatrix(bias.getNumRows()));
+        return deltaLossInput;
     }
 
     private Matrix calculateDeltaLossInput(Matrix targetValues) {
         //Calculating partial deriative of loss function with respect to the activation function.
         errorFunction.InputErrorDerivative(targetValues, activatedLayerContents);
-        Matrix deltaLossActivate = errorFunction.getErrorDerivativeMatrix();
+        errorFunction.numDerivativeError();
+        double deltaLossActivate = errorFunction.getErrorDerivative();
 
         //Calculating partial deriative of activation function with respect to the input matrix.
         Matrix deltaActivationInput = activation.inputActivationDerivative(layerContents);
-        deltaActivationInput = deltaActivationInput.transpose();
 
-        return deltaLossActivate.multiply(deltaActivationInput);
+        return deltaActivationInput.scalarMultiply(deltaLossActivate);
     }
 
-    private Matrix generateOneMatrix(int size) {
-        double newData[][] = new double[size][1];
+    public void printAttributes() {
+        System.out.println("Weights:");
+        weights.printMatrix();
+        System.out.println();
 
-        for (int i = 0; i < size; i++) {
-            newData[i][0] = 1.0;
-        }
+        System.out.println("Bias:");
+        bias.printMatrix();
+        System.out.println();
 
-        return new Matrix(newData);
     }
 }

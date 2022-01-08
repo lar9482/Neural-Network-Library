@@ -20,12 +20,12 @@ public abstract class Layer {
     public Layer(ActivationFunction activation, ErrorFunction errorFunction, int size) {
         this.activation = activation;
         this.errorFunction = errorFunction;
+        this.numNeurons = size;
         linkLayers(null);
-        initializeLayer(size);
     }
     
-    protected boolean checkDimensions() {
-        if (layerContents.getNumCols() != 1) {
+    protected boolean checkDimensions(int size) {
+        if (prevLayer.getSize() != size) {
             return false;
         }
         else {
