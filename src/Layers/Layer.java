@@ -44,4 +44,8 @@ public abstract class Layer {
     public int getSize() {
         return this.numNeurons;
     }
+
+    public void setActivatedContents(Matrix contents) {
+        this.activatedLayerContents = contents;
+    } 
 }

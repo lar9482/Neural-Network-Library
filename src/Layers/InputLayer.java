@@ -59,7 +59,6 @@ public class InputLayer extends Layer{
         testLayer.initializeLayer(size);
         testLayer.setLearningRate(learningRate);
         
-
         double[][] target = {
             {1},
             {0},
