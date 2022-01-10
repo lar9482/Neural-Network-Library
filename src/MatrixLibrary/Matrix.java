@@ -127,7 +127,7 @@ public class Matrix {
         }
         else {
             int curIndex = 0;
-
+            
             for (int i = 0; i < cols; i++) {
                 if ((curIndex < indices.length) && (i == indices[curIndex])) {
                     for (int j = 0; j < rows; j++) {
