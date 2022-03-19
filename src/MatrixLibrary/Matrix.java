@@ -172,7 +172,7 @@ public class Matrix {
         return new Matrix(newData);
     }
 
-    public Matrix multiply(Matrix matrix) throws IllegalArgumentException{
+    public Matrix multiply(Matrix matrix)  throws IllegalArgumentException {
         double[][] newData = new double[rows][matrix.getNumCols()];
         if (cols != matrix.getNumRows()) {
             throw new IllegalArgumentException("Make sure the number of columns equals the number of rows:(Dimensionality error)");
@@ -190,6 +190,23 @@ public class Matrix {
             }
         }
 
+        return new Matrix(newData);
+    }
+
+    public Matrix HadamardMultiply(Matrix matrix)  throws IllegalArgumentException {
+
+        double[][] newData = new double[rows][cols]; 
+        if (rows != matrix.getNumRows() || cols != matrix.getNumCols()) {
+            throw new IllegalArgumentException("Error in the Hadamard multiplication");
+        }
+        else {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    newData[i][j] = data[i][j]*matrix.getData()[i][j];
+                }
+            }
+        }
+        
         return new Matrix(newData);
     }
 
@@ -236,6 +253,6 @@ public class Matrix {
         return this.data;
     }
     public static void main(String args[]) {
-    
+        
     }
 }

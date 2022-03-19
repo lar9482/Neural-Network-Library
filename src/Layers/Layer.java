@@ -2,47 +2,48 @@ package Layers;
 import MatrixLibrary.Matrix;
 import ActivationFunctionLibrary.*;
 import ErrorFunctionLibrary.*;
+import LearningAlgorithm.*;
 
 public abstract class Layer {
     protected Matrix layerContents;
     protected Matrix activatedLayerContents;
-    protected int numNeurons;
+
+    protected int layerSize;
+    protected int featureSize;
     
     protected Layer prevLayer; 
+    protected Layer nextLayer;
 
     protected ActivationFunction activation;
     protected ErrorFunction errorFunction;
 
-    public abstract void feedForward();
-    public abstract void backPropagation(Matrix targetValues);
-    public abstract void initializeLayer(int size);
+    protected LearningAlgorithm algorithm; 
 
-    public Layer(ActivationFunction activation, ErrorFunction errorFunction, int size) {
+    public abstract void feedForward(String selectedAlgorithm);
+    public abstract void backPropagation(Matrix targetMatrix, Matrix resultMatrix);
+
+    public Layer(ActivationFunction activation, ErrorFunction errorFunction, int layerSize, int featureSize) {
         this.activation = activation;
         this.errorFunction = errorFunction;
-        this.numNeurons = size;
-        linkLayers(null);
-    }
-    
-    protected boolean checkDimensions(int size) {
-        if (prevLayer.getSize() != size) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        this.layerSize = layerSize;
+        this.featureSize = featureSize;
     }
 
-    public void linkLayers(Layer prev) {
+    public void linkLayers(Layer prev, Layer next) {
         this.prevLayer = prev;
+        this.nextLayer = next;
     }
 
     public Matrix getActivatedContents() {
         return this.activatedLayerContents;
     }
 
-    public int getSize() {
-        return this.numNeurons;
+    public int getLayerSize() {
+        return this.layerSize;
+    }
+
+    public int getFeatureSize() {
+        return this.featureSize;
     }
 
     public void setActivatedContents(Matrix contents) {

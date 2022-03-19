@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch sigmoid",
+            "request": "launch",
+            "mainClass": "ActivationFunctionLibrary.sigmoid",
+            "projectName": "Neural Network_27e0a7aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch CrossEntropy",
+            "request": "launch",
+            "mainClass": "ErrorFunctionLibrary.CrossEntropy",
+            "projectName": "Neural Network_27e0a7aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch InputLayer",
+            "request": "launch",
+            "mainClass": "Layers.InputLayer",
+            "projectName": "Neural Network_27e0a7aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch Matrix",
+            "request": "launch",
+            "mainClass": "MatrixLibrary.Matrix",
+            "projectName": "Neural Network_27e0a7aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch TestBatchTraining",
+            "request": "launch",
+            "mainClass": "Tests.TestBatchTraining",
+            "projectName": "Neural Network_27e0a7aa"
+        }
+    ]
+}

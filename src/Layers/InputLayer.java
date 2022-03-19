@@ -6,14 +6,15 @@ import java.lang.IllegalArgumentException;
 
 public class InputLayer extends Layer{
     
-    public InputLayer(ActivationFunction activation, ErrorFunction errorFunction, int size) {
-        super(activation, errorFunction, size);
-        initializeLayer(size);
+    public InputLayer(ActivationFunction activation, ErrorFunction errorFunction, int sampleSize, int featureSize) {
+        super(activation, errorFunction, sampleSize, featureSize);
+        initializeLayer(sampleSize, featureSize);
     }
 
     @Override
-    public void initializeLayer(int size) throws IllegalArgumentException {
-        this.numNeurons = size;
+    public void initializeLayer(int sampleSize, int featureSize) throws IllegalArgumentException {
+        this.sampleSize = sampleSize;
+        this.featureSize = featureSize;
     }
 
     public void feedDataIn(Matrix layerContents) {
@@ -37,16 +38,16 @@ public class InputLayer extends Layer{
         int size = 10;
         double learningRate = 0.5;
         double[][] data = {
-            {1},
-            {2},
-            {3},
-            {4},
-            {5},
-            {6},
-            {7},
-            {8},
-            {9},
-            {10}
+            {1, 1},
+            {2, 2},
+            {3, 2},
+            {4, 2},
+            {5, 2},
+            {6, 2},
+            {7, 2},
+            {8, 2},
+            {9, 2},
+            {10, 0}
         };
 
 
@@ -56,20 +57,20 @@ public class InputLayer extends Layer{
 
 
         dummyLayer.feedDataIn(dataMatrix);
-        testLayer.initializeLayer(size);
+        // testLayer.initializeLayer(size);
         testLayer.setLearningRate(learningRate);
-        
+        9
         double[][] target = {
-            {1},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0}
+            {1, 1},
+            {2, 2},
+            {3, 2},
+            {4, 2},
+            {5, 2},
+            {6, 2},
+            {7, 2},
+            {8, 2},
+            {9, 2},
+            {10, 0}
         };
         Matrix targetMatrix = new Matrix(target);
         testLayer.feedForward();

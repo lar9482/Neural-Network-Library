@@ -8,5 +8,9 @@ public class OutputLayer extends DenseLayer {
         super(activation, errorFunction, size, prevLayer);
     }
 
-    
+    public double calculateError(Matrix targetValues) {
+        errorFunction.InputError(targetValues, activatedLayerContents);
+        errorFunction.numError();
+        return errorFunction.getError();
+    }
 }

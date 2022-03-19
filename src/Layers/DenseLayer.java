@@ -2,6 +2,8 @@ package Layers;
 import MatrixLibrary.Matrix;
 import ActivationFunctionLibrary.*;
 import ErrorFunctionLibrary.*;
+import LearningAlgorithm.*;
+
 import java.lang.IllegalArgumentException;
 
 public class DenseLayer extends Layer{
@@ -9,77 +11,68 @@ public class DenseLayer extends Layer{
     private Matrix weights;
     private Matrix bias;
 
-    public DenseLayer(ActivationFunction activation, ErrorFunction errorFunction, int size, Layer prevLayer) {
-        super(activation, errorFunction, size);
-        this.prevLayer = prevLayer;
-        initializeLayer(numNeurons);
-    }
-
-    public void initializeLayer(int size) throws IllegalArgumentException{
-        if (prevLayer == null) {
-            throw new IllegalArgumentException("Link a previous layer before iniitializing this layer.");
-        }
-
-        weights = new Matrix(prevLayer.getSize(), size);
-        bias = new Matrix(size, 1);
-    }
-    public void setLearningRate(double rate) {
-        this.learningRate = rate;
+    public DenseLayer(ActivationFunction activation, ErrorFunction errorFunction, int layerSize, int featureSize, double learningRate) {
+        super(activation, errorFunction, layerSize, featureSize);
+        this.learningRate = learningRate;
     }
     
-    public void feedForward() throws IllegalArgumentException{
-        if (checkDimensions(numNeurons)) {
-            Matrix weightsTranspose = weights.transpose();
-            Matrix weightMultipliedByLayer = weightsTranspose.multiply(prevLayer.getActivatedContents());
+    public void initializeLayer() throws IllegalArgumentException{
+        if (prevLayer == null || nextLayer == null) {
+            throw new IllegalArgumentException("This layer doesn't have linked layers.");
+        }
 
-            layerContents = (weightMultipliedByLayer.add(bias));
-            activatedLayerContents = activation.inputActivation(layerContents);
+        int previousLayerSize = prevLayer.getLayerSize();
+        weights = new Matrix(layerSize, previousLayerSize);
+        bias = new Matrix(layerSize, previousLayerSize);
+
+    }
+
+    @Override
+    public void feedForward(String selectedAlgorithm) {
+        Matrix weightMultipliedByLayer = weights.multiply(prevLayer.getActivatedContents());
+            
+        layerContents = (weightMultipliedByLayer.add(bias));
+        activatedLayerContents = activation.inputActivation(layerContents);       
+
+        algorithm = selectLearningAlgorithm(selectedAlgorithm);
+    }
+
+    @Override
+    public void backPropagation(Matrix targetMatrix, Matrix resultMatrix) throws IllegalArgumentException{
+        if (algorithm == null) {
+            throw new IllegalArgumentException("Make sure this layer an algorithm to backpropagate on");
+        }
+        
+        Matrix deltaWeights = algorithm.calculateChangeWeights(targetMatrix, resultMatrix);
+        Matrix deltaBias = algorithm.calculateChangeBias(targetMatrix, resultMatrix);
+
+        weights.add(deltaWeights);
+        bias.add(deltaBias);
+        
+        // if (targetValues.getNumRows() != numNeurons) {
+        //     throw new IllegalArgumentException("Make sure the number of neurons of the target matrix is equal to be of the this layer");
+        // }
+        // else {
+        //     Matrix deltaLossWeights = backPropagateWeights(targetValues);
+        //     Matrix deltaLossBias = backPropagateBias(targetValues);
+
+        //     deltaLossWeights = deltaLossWeights.scalarMultiply(-learningRate);
+        //     deltaLossBias = deltaLossBias.scalarMultiply(-learningRate);
+
+        //     weights = weights.add(deltaLossWeights);
+        //     bias = bias.add(deltaLossBias);
+        // }
+    }
+
+    private LearningAlgorithm selectLearningAlgorithm(String algorithmName) {
+        LearningAlgorithm algo;
+        if (algorithmName.equals("Gradient Descent")) {
+            algo = new GradientDescent(activation, errorFunction, weights, bias, layerContents, learningRate);
         }
         else {
-            throw new IllegalArgumentException("Make sure the number of neurons of this layer is equal to be of the previous layer");
+            algo = new GradientDescent(activation, errorFunction, weights, bias, layerContents, learningRate);
         }
-    }
-
-
-    public void backPropagation(Matrix targetValues) throws IllegalArgumentException{
-
-        if (targetValues.getNumRows() != numNeurons) {
-            throw new IllegalArgumentException("Make sure the number of neurons of the target matrix is equal to be of the this layer");
-        }
-        else {
-            Matrix deltaLossWeights = backPropagateWeights(targetValues);
-            Matrix deltaLossBias = backPropagateBias(targetValues);
-
-            deltaLossWeights = deltaLossWeights.scalarMultiply(-learningRate);
-            deltaLossBias = deltaLossBias.scalarMultiply(-learningRate);
-
-            weights = weights.add(deltaLossWeights);
-            bias = bias.add(deltaLossBias);
-        }
-    }
-
-    private Matrix backPropagateWeights(Matrix targetValues) {
-        Matrix deltaLossInput = calculateDeltaLossInput(targetValues);
-
-        return deltaLossInput.multiply(prevLayer.getActivatedContents().transpose());
-    }
-
-    private Matrix backPropagateBias(Matrix targetValues) {
-        Matrix deltaLossInput = calculateDeltaLossInput(targetValues);
-
-        return deltaLossInput;
-    }
-
-    private Matrix calculateDeltaLossInput(Matrix targetValues) {
-        //Calculating partial deriative of loss function with respect to the activation function.
-        errorFunction.InputErrorDerivative(targetValues, activatedLayerContents);
-        errorFunction.numDerivativeError();
-        double deltaLossActivate = errorFunction.getErrorDerivative();
-
-        //Calculating partial deriative of activation function with respect to the input matrix.
-        Matrix deltaActivationInput = activation.inputActivationDerivative(layerContents);
-
-        return deltaActivationInput.scalarMultiply(deltaLossActivate);
+        return algo;
     }
 
     public void printAttributes() {
@@ -100,28 +93,8 @@ public class DenseLayer extends Layer{
         return bias.getMultipleRows(indices);
     }
 
-    public void performBatchTraining(int[] indices, Matrix targetValues) {
-        Matrix originalWeights = weights;
-        Matrix originalBias = bias;
-        Matrix originalPrevLayer = prevLayer.getActivatedContents();
-        Matrix originalActivatedContents = activatedLayerContents;
-
-        weights = weights.getMultipleRows(indices);
-        bias = bias.getMultipleRows(indices);
-
-        prevLayer.setActivatedContents(originalPrevLayer.getMultipleRows(indices));
-
-        feedForward();
-        backPropagation(targetValues);
-
-        Matrix currentWeights = weights;
-        Matrix currentBias = bias;
-        Matrix currentPrevLayer = prevLayer.getActivatedContents();
-        Matrix currentActivatedContents = activatedLayerContents;
-
-
-        weights = originalWeights.setMultipleRows(weights.getData(), indices);
-        bias = originalBias.setMultipleRows(bias.getData(), indices);
-        //prevLayer.setActivatedContents();
+    public void setLearningRate(double rate) {
+        this.learningRate = rate;
     }
+    
 }
