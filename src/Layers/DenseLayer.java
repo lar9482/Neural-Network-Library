@@ -7,23 +7,24 @@ import LearningAlgorithm.*;
 import java.lang.IllegalArgumentException;
 
 public class DenseLayer extends Layer{
-    private double learningRate; 
-    private Matrix weights;
-    private Matrix bias;
+    protected double learningRate; 
+    protected Matrix weights;
+    protected Matrix bias;
 
     public DenseLayer(ActivationFunction activation, ErrorFunction errorFunction, int layerSize, int featureSize, double learningRate) {
         super(activation, errorFunction, layerSize, featureSize);
         this.learningRate = learningRate;
     }
+
     
     public void initializeLayer() throws IllegalArgumentException{
-        if (prevLayer == null || nextLayer == null) {
+        if (prevLayer == null) {
             throw new IllegalArgumentException("This layer doesn't have linked layers.");
         }
 
         int previousLayerSize = prevLayer.getLayerSize();
         weights = new Matrix(layerSize, previousLayerSize);
-        bias = new Matrix(layerSize, previousLayerSize);
+        bias = new Matrix(layerSize, featureSize);
 
     }
 
@@ -64,7 +65,7 @@ public class DenseLayer extends Layer{
         // }
     }
 
-    private LearningAlgorithm selectLearningAlgorithm(String algorithmName) {
+    protected LearningAlgorithm selectLearningAlgorithm(String algorithmName) {
         LearningAlgorithm algo;
         if (algorithmName.equals("Gradient Descent")) {
             algo = new GradientDescent(activation, errorFunction, weights, bias, layerContents, learningRate);
