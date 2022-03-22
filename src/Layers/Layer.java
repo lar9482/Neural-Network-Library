@@ -12,7 +12,6 @@ public abstract class Layer {
     protected int featureSize;
     
     protected Layer prevLayer; 
-    protected Layer nextLayer;
 
     protected ActivationFunction activation;
     protected ErrorFunction errorFunction;
@@ -29,9 +28,16 @@ public abstract class Layer {
         this.featureSize = featureSize;
     }
 
-    public void linkLayers(Layer prev, Layer next) {
+    public Layer() {
+    }
+
+    public Layer(ActivationFunction activation, ErrorFunction errorFunction) {
+        this.activation = activation;
+        this.errorFunction = errorFunction;
+    }
+
+    public void linkLayers(Layer prev) {
         this.prevLayer = prev;
-        this.nextLayer = next;
     }
 
     public Matrix getActivatedContents() {
