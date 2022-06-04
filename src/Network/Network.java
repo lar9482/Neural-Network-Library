@@ -7,26 +7,50 @@ import java.util.LinkedList;
 
 public class Network {
     private InputLayer input;
-    private LinkedList<DenseLayer> hidden_layers;
+    private LinkedList<DenseLayer> hiddenLayers;
     private OutputLayer output;
 
     private Matrix targetValues;
-    private double learningRate;
-    private int numNeurons;
+    private int featureSize;
 
-    private ActivationFunction activation;
-    private ErrorFunction loss;
-
-    public Network(ActivationFunction activation, ErrorFunction lossFunction, double learningRate, int size) {
-        this.activation = activation;
-        this.loss = lossFunction;
-        this.learningRate = learningRate;
-        this.numNeurons = size;
+    public Network(int featureSize) {
+        this.featureSize = featureSize;
+        this.input = new InputLayer();
+        this.hiddenLayers = new LinkedList<DenseLayer>();
     }
 
+    public void addLayer(ActivationFunction activation, ErrorFunction errorFunction, int samplingSize, double learningRate) {
+        DenseLayer layer = new DenseLayer(activation, errorFunction, samplingSize, featureSize, learningRate);
+        
+        if (hiddenLayers.size() == 0) {
+            layer.linkLayers(input);
+        }
+        else {
+            layer.linkLayers(hiddenLayers.getLast());
+        }
+
+        layer.initializeLayer();
+        hiddenLayers.add(layer);
+        
+    }
+
+    private void setUpInputLayer() {
+
+    }
+
+    private void setUpOutputLayer() {
+
+    }
+    
     public void setTargetValues(Matrix values) {
         this.targetValues = values;
+    }   
+
+    public void fit(Matrix inputMatrix, Matrix outputMatrix) {
+
     }
 
-    
+    public void predict(Matrix inputMatrix) {
+        
+    }
 }

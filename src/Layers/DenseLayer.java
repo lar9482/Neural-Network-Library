@@ -49,20 +49,6 @@ public class DenseLayer extends Layer{
 
         weights.add(deltaWeights);
         bias.add(deltaBias);
-        
-        // if (targetValues.getNumRows() != numNeurons) {
-        //     throw new IllegalArgumentException("Make sure the number of neurons of the target matrix is equal to be of the this layer");
-        // }
-        // else {
-        //     Matrix deltaLossWeights = backPropagateWeights(targetValues);
-        //     Matrix deltaLossBias = backPropagateBias(targetValues);
-
-        //     deltaLossWeights = deltaLossWeights.scalarMultiply(-learningRate);
-        //     deltaLossBias = deltaLossBias.scalarMultiply(-learningRate);
-
-        //     weights = weights.add(deltaLossWeights);
-        //     bias = bias.add(deltaLossBias);
-        // }
     }
 
     protected LearningAlgorithm selectLearningAlgorithm(String algorithmName) {
